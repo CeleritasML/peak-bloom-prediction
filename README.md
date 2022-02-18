@@ -1,5 +1,26 @@
 # Cherry Blossom Peak Bloom Prediction
 
+> The list of stations can be retrieved using the ghcnd_stations() function. Note that the closest weather station to each city with continuously collected maximum temperatures are USC00186350 (Washington D.C.), GME00127786 (Liestal), JA000047759 (Kyoto), and CA001108395 (Vancouver).
+
+[GHCND Stations](https://www.ncei.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt)
+
+- JA000047401, 45.4170, 141.6830, 12.0, WAKKANAI JAPAN
+- KSW00043262, 38.1000, 128.0000, 177.1, YANGGU TEAM 842 (close to Sokcho, South Korea)
+
+
+- Additional data sources:
+   - [Kyoto, Japan 1,200 Year Cherry Tree Flowering Dates and March Temperature Reconstructions](https://www.ncei.noaa.gov/access/paleo-search/study/26430)
+   - Washington, DC?
+   - Vancouver, BC?
+   - Liestal, Switzerland?
+   - Test on Wakkanai, Japan
+   - Test on Sokcho, South Korea?
+   - Test on more places in Switzerland?
+
+
+
+***
+
 This is the official template repository for George Mason’s Department of Statistics cherry blossom peak bloom prediction competition.
 
 This repository contains cleaned and ready-to-use data on peak bloom dates in the *data/* folder, alongside a demo prediction analysis report (*demo_analysis.Rmd*).
@@ -42,7 +63,7 @@ To fork this repository, locate the _Fork_ button at the top right of the page:
 This will copy the repository to your GitHub account under the name _peak-bloom-prediction_.
 
 Next you need to clone the repository to your local computer.
-Navigate to **your fork** of the repository on github.com. 
+Navigate to **your fork** of the repository on github.com.
 The steps are the same as outlined below for cloning the repository, **but the location of the respository will be different**.
 
 More detailed instructions on how to fork a repository can be found under https://docs.github.com/en/get-started/quickstart/fork-a-repo.
