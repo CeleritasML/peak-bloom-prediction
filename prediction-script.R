@@ -72,7 +72,7 @@ washingtondc <- cherry |>
   as_tsibble(index = year)
 
 washingtondc_pred <- washingtondc |>
-  model(NNETAR(bloom_doy)) |>
+  model(VAR(vars(bloom_doy, tmax_avg) ~ AR(3))) |>
   forecast(h=10)
 
 washingtondc_pred |>
@@ -86,7 +86,7 @@ liestal <- cherry |>
   as_tsibble(index = year)
 
 liestal_pred <- liestal |>
-  model(NNETAR(bloom_doy)) |>
+  model(VAR(vars(bloom_doy, tmax_avg) ~ AR(3))) |>
   forecast(h=10)
 
 liestal_pred |>
@@ -100,7 +100,7 @@ kyoto <- cherry |>
   as_tsibble(index = year)
 
 kyoto_pred <- kyoto |>
-  model(NNETAR(bloom_doy)) |>
+  model(VAR(vars(bloom_doy, tmax_avg) ~ AR(3))) |>
   forecast(h=10)
 
 kyoto_pred |>
@@ -110,9 +110,9 @@ kyoto_pred |>
 
 output <- tibble(
   year = seq(2022, 2031),
-  kyoto = round(kyoto_pred$.mean),
-  liestal = round(liestal_pred$.mean),
-  washingtondc = round(washingtondc_pred$.mean)
+  kyoto = round(kyoto_pred$.mean[,1]),
+  liestal = round(liestal_pred$.mean[,1]),
+  washingtondc = round(washingtondc_pred$.mean[,1])
 )
 
 output <- output |>
