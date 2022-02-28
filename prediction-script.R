@@ -1,7 +1,7 @@
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(tidyverse, styler,
                janitor, fpp3, fable,
-               rnoaa)
+               ggthemes, rnoaa)
 
 #' Get the annual average maximum temperature at the given station,
 #' separated into the 4 meteorological seasons (Winter, Spring, Summer, Fall).
@@ -19,21 +19,21 @@ pacman::p_load(tidyverse, styler,
 #'   - `tmax_avg` ... average maximum temperate in tenth degree Celsius
 get_temperature <- function (stationid) {
   ghcnd_search(stationid = stationid, var = c("tmax"), 
-               date_min = "1950-01-01", date_max = "2022-01-31")[[1]] %>%
+               date_min = "1950-01-01", date_max = "2022-01-31")[[1]] |>
     mutate(year = as.integer(format(date, "%Y")),
            month = as.integer(strftime(date, '%m')) %% 12, # make December "0"
            season = cut(month, breaks = c(0, 2, 5, 8, 11),
                         include.lowest = TRUE,
                         labels = c("Winter", "Spring", "Summer", "Fall")),
-           year = if_else(month == 0, year + 1L, year)) %>%
-    group_by(year, season) %>%
+           year = if_else(month == 0, year + 1L, year)) |>
+    group_by(year, season) |>
     summarize(tmax_avg = mean(tmax, na.rm = TRUE))
 }
 
 historic_temperatures <-
-  tibble(location = "washingtondc", get_temperature("USC00186350")) %>%
-  bind_rows(tibble(location = "liestal", get_temperature("GME00127786"))) %>%
-  bind_rows(tibble(location = "kyoto", get_temperature("JA000047759"))) %>%
+  tibble(location = "washingtondc", get_temperature("USC00186350")) |>
+  bind_rows(tibble(location = "liestal", get_temperature("GME00127786"))) |>
+  bind_rows(tibble(location = "kyoto", get_temperature("JA000047759"))) |>
   bind_rows(tibble(location = "vancouver", get_temperature("CA001108395")))
 
 winter_temp <- historic_temperatures |>
@@ -47,25 +47,6 @@ cherry <- read_csv("data/washingtondc.csv") |>
   select(location, lat, long, alt, year, bloom_doy) |>
   left_join(winter_temp, by=c("location"="location", "year"="year"))
 
-# wakkanai <- read_csv("data/japan.csv") |>
-#   filter(year>=1980) |>
-#   filter(location=="Japan/Wakkanai") |>
-#   select(location, lat, long, alt, year, bloom_doy) |>
-#   mutate(location="wakkanai")
-
-# cherry <- cherry |>
-#   bind_rows(wakkanai)
-
-# cherry |>
-#   ggplot(aes(x=year, y=bloom_doy)) +
-#   geom_point() +
-#   scale_x_continuous(breaks=seq(1980, 2020, by=5)) +
-#   facet_wrap(location ~ .) +
-#   labs(
-#     x="Year",
-#     y="Peak bloom day"
-#   )
-
 washingtondc <- cherry |>
   filter(location=="washingtondc") |>
   select(year, bloom_doy, tmax_avg) |>
@@ -77,8 +58,12 @@ washingtondc_pred <- washingtondc |>
 
 washingtondc_pred |>
   autoplot(washingtondc) +
+  theme_fivethirtyeight() +
   labs(x="Year", y="bloom date of the year",
-       title="Yearly bloom date")
+       title="Washington DC Blossom Date Prediction")
+
+ggsave("figures/washingtondc.png", plot=last_plot(), height=6, width=8)
+  
 
 liestal <- cherry |>
   filter(location=="liestal") |>
@@ -91,8 +76,11 @@ liestal_pred <- liestal |>
 
 liestal_pred |>
   autoplot(liestal) +
+  theme_fivethirtyeight() +
   labs(x="Year", y="bloom date of the year",
-       title="Yearly bloom date")
+       title="Liestal Blossom Date Prediction")
+
+ggsave("figures/liestal.png", plot=last_plot(), height=6, width=8)
 
 kyoto <- cherry |>
   filter(location=="kyoto") |>
@@ -105,8 +93,11 @@ kyoto_pred <- kyoto |>
 
 kyoto_pred |>
   autoplot(kyoto) +
+  theme_fivethirtyeight() +
   labs(x="Year", y="bloom date of the year",
-       title="Yearly bloom date")
+       title="Kyoto Blossom Date Prediction")
+
+ggsave("figures/kyoto.png", plot=last_plot(), height=6, width=8)
 
 output <- tibble(
   year = seq(2022, 2031),
